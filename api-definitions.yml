@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: Institution apis - OpenAPI 3.0
+  description: |-
+    This is a knowledge base server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io).
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+tags:
+  - name: level
+    description: Access to levels managed by an institution
+
+paths:
+  /levels:
+    post:
+      tags:
+        - level
+      summary: Create a new class, year, standard or any other level like JEE etc...
+      description: Create a new class, year, standard or any other level like JEE etc...
+      operationId: createKnowledgeLevel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostKnowledgeLevelRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostKnowledgeLevelResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostKnowledgeLevelResponse'
+          description: Invalid input
+    get:
+      tags:
+        - level
+      summary: Returns all the levels under the given board
+      description: Returns all the levels under the given board
+      operationId: getLevels
+      parameters:
+        - name: boardId
+          in: query
+          description: A list of board IDs from which the levels should be fetched
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetKnowledgeLevelsResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostKnowledgeLevelResponse'
+          description: Invalid input
+          
+  /levels/{levelId}:
+    delete:
+      tags:
+        - level
+      summary: Delete level by ID
+      description: Delete level by ID
+      operationId: deleteLevel
+      parameters:
+        - name: levelId
+          in: path
+          description: ID of the level that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteKnowledgeLevelResponse'
+        '400':
+          description: Invalid ID supplied
+  /levels/{sourceBoardId}/{levelId}:
+    delete:
+      tags:
+        - level
+      summary: Delete level by ID
+      description: Delete level by ID
+      operationId: deleteLevelByBoard
+      parameters:
+        - name: levelId
+          in: path
+          description: ID of the level that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: sourceBoardId
+          in: path
+          description: ID of the level that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteKnowledgeLevelResponse'
+        '400':
+          description: Invalid ID supplied
+components:
+  schemas:
+    DeleteKnowledgeLevelResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DeleteKnowledgeLevelResponseData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings' 
+    DeleteKnowledgeLevelResponseData:
+      properties:
+        impactedBoards:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+        levelsDeleted:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    GetKnowledgeLevelsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/GetKnowledgeLevelsResponseData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    GetKnowledgeLevelsResponseData:
+      type: object
+      properties:
+        sourceBoardId:
+          type: string
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    PostKnowledgeLevelRequestData:
+      type: object
+      properties:
+        sourceBoardId:
+          type: string
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    PostKnowledgeLevelResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostKnowledgeLevelResponseData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    PostKnowledgeLevelResponseData:
+      type: object
+      properties:
+        sourceBoardId:
+          type: string
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    IdAndData:
+      type: object
+      properties:
+        levelId:
+          type: string
+        levelName:
+          type: string
+    PostKnowledgeLevelRequest:
+      properties:
+        data:
+          $ref: '#/components/schemas/PostKnowledgeLevelRequestData'
+              
+    ErrorsAndWarnings:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message' 
+    Message:
+      type: object
+      properties:
+        code: 
+          type: string
+          example: TIMESHEET_001
+        message:
+          type: string
+          example: Consider using an assigned task
