@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Institution apis - OpenAPI 3.0
+  title: Knowledge graph apis - OpenAPI 3.0
   description: |-
     This is a knowledge base server based on the OpenAPI 3.0 specification.  You can find out more about
     Swagger at [https://swagger.io](https://swagger.io).
