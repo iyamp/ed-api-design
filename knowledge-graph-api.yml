@@ -11,8 +11,111 @@ info:
 tags:
   - name: level
     description: Access to levels managed by an institution
+  - name: book
+    description: Access to the books managed by an institution
 
 paths:
+  /sections:
+    post:
+      tags:
+        - book
+      summary: Create a section in a book managed by an institution
+      description: Create a section in a book managed by an institution
+      operationId: postBookSections
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookSectionRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBookSectionResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+    get:
+      tags:
+        - book
+      summary: Gets the sections that comes under the sourceId
+      description: Gets the sections that comes under the sourceId
+      operationId: getBookSections
+      parameters:
+        - name: sourceSectionIds
+          in: query
+          description: A list of source IDs from which the section should be fetched
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: recursive
+          in: query
+          description: A flag to mention if the sections should be fetched recursively
+          required: true
+          schema:
+            type: boolean
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBookSectionsResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+    delete:
+      tags:
+        - book
+      summary: Deletes the sections that comes under the given sourceIds
+      description: Deletes the sections that comes under the given sourceIds
+      operationId: deleteBookSections
+      parameters:
+        - name: sourceSectionIds
+          in: query
+          description: A list of source IDs from which the section should be fetched
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: recursive
+          in: query
+          description: A flag to mention if the sections should be fetched recursively
+          required: true
+          schema:
+            type: boolean
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteBookSectionsResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input   
   /levels:
     post:
       tags:
@@ -36,7 +139,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostKnowledgeLevelResponse'
+                $ref: '#/components/schemas/ErrorsAndWarnings'
           description: Invalid input
     get:
       tags:
@@ -66,9 +169,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostKnowledgeLevelResponse'
+                $ref: '#/components/schemas/ErrorsAndWarnings'
           description: Invalid input
-          
+    
   /levels/{levelId}:
     delete:
       tags:
@@ -82,8 +185,8 @@ paths:
           description: ID of the level that needs to be deleted
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            
       responses:
         '200':
           description: successful operation
@@ -106,26 +209,105 @@ paths:
           description: ID of the level that needs to be deleted
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            
         - name: sourceBoardId
           in: path
           description: ID of the level that needs to be deleted
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteKnowledgeLevelResponse'
+                $ref: '#/components/schemas/ErrorsAndWarnings'
         '400':
           description: Invalid ID supplied
 components:
   schemas:
+    DeleteBookSectionsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DeleteBookSectionsResponseData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    DeleteBookSectionsResponseData:
+      type: object
+      properties:
+        sourceSectionId:
+         type: string
+         description: The section id can also be a book id
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    GetBookSectionsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/GetBookSectionsResponseData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    CreateBookSectionResponseData:
+      type: object
+      properties:
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+        sourceSectionIds:
+          type: array
+          items:
+            type: string
+          description: The section id can also be a book id
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    CreateBookSectionResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CreateBookSectionResponseData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'  
+    GetBookSectionsResponseData:
+      type: object
+      properties:
+        sourceSectionId:
+         type: string
+         description: The section id can also be a book id
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+    CreateBookSectionRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CreateBookSectionRequestData'
+    CreateBookSectionRequestData:
+      type: object
+      properties:
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+        sourceSectionIds:
+          type: array
+          items:
+            type: string
+          description: The section id can also be a book id
+        sectionsToAdd:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdAndData'
+        
     DeleteKnowledgeLevelResponse:
       type: object
       properties:
@@ -187,9 +369,9 @@ components:
     IdAndData:
       type: object
       properties:
-        levelId:
+        id:
           type: string
-        levelName:
+        data:
           type: string
     PostKnowledgeLevelRequest:
       properties:
