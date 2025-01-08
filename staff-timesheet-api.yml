@@ -1,1 +1,154 @@
 
+openapi: 3.0.3
+info:
+  title: Knowledge graph apis - OpenAPI 3.0
+  description: |-
+    This is a knowledge base server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io).
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+
+paths:
+  /staff/time-log:
+    post:
+      tags:
+        - staffTimeLog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    timeLogs:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "timeLogID"
+                          taskId:
+                            type: string
+                            example: "posterCreationTask"
+                          startDateTime:
+                            type: string
+                            format: date-time
+                            example: "2022-10-31T09:00:00.000Z"
+                          endDateTime:
+                            type: string
+                            format: date-time
+                            example: "2022-10-31T10:00:00.000Z"
+                          description:
+                            type: string
+                            example: "Created posters for the event."
+                          staffId:
+                            type: string
+                            example: "001"
+      responses:
+        '200':
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: "001"
+                        message:
+                          type: string
+                          example: "invalid input"
+                  warnings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: "001"
+                        message:
+                          type: string
+                          example: "invalid input"
+                  data:
+                    type: object
+                    properties:
+                      timeLogs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "timeLogID"
+                            taskId:
+                              type: string
+                              example: "posterCreationTask"
+                            startDateTime:
+                              type: string
+                              format: date-time
+                              example: "2022-10-31T09:00:00.000Z"
+                            endDateTime:
+                              type: string
+                              format: date-time
+                              example: "2022-10-31T10:00:00.000Z"
+                            description:
+                              type: string
+                              example: "Created posters for the event."
+                            staffId:
+                              type: string
+                              example: "001"
+                        
+        '400':
+          description: "Invalid input"
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: "TIMESHEET_001"
+                        message:
+                          type: string
+                          example: "invalid staff id"
+                  warnings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        code:
+                          type: string
+                          example: "TIMESHEET_002"
+                        message:
+                          type: string
+                          example: "invalid staff id"
+                    
+                  
+                  
+                  
+                  
+                  
+           
+                  
+     
+                
+              
+        
+        
+
+
