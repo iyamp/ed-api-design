@@ -394,7 +394,7 @@ components:
       properties:
         code: 
           type: string
-          example: TIMESHEET_001
+          example: '001'
         message:
           type: string
-          example: Consider using an assigned task
+          example: invalid id
