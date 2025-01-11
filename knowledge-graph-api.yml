@@ -9,31 +9,33 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.11
 tags:
-  - name: level
-    description: Access to levels managed by an institution
-  - name: book
-    description: Access to the books managed by an institution
+  - name: section
+    description: Access to the sections managed by an institution
+  - name: content
+    description: Manage content entities within the system
+  - name: relations
+    description: Manage relationships between sections and content
 
 paths:
   /sections:
     post:
       tags:
-        - book
-      summary: Create a section in a book managed by an institution
-      description: Create a section in a book managed by an institution
-      operationId: postBookSections
+        - section
+      summary: Create a section managed by an institution
+      description: Create a section managed by an institution
+      operationId: postSections
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateBookSectionRequest'
+              $ref: '#/components/schemas/CreateSectionRequest'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateBookSectionResponse'
+                $ref: '#/components/schemas/CreateSectionResponse'
         '400':
           content:
             application/json:
@@ -42,14 +44,14 @@ paths:
           description: Invalid input
     get:
       tags:
-        - book
-      summary: Gets the sections that comes under the sourceId
-      description: Gets the sections that comes under the sourceId
-      operationId: getBookSections
+        - section
+      summary: Gets the sections under the given sourceId
+      description: Gets the sections under the given sourceId
+      operationId: getSections
       parameters:
         - name: sourceSectionIds
           in: query
-          description: A list of source IDs from which the section should be fetched
+          description: A list of source IDs from which the sections should be fetched
           required: true
           schema:
             type: array
@@ -71,7 +73,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetBookSectionsResponse'
+                $ref: '#/components/schemas/GetSectionsResponse'
         '400':
           content:
             application/json:
@@ -80,14 +82,14 @@ paths:
           description: Invalid input
     delete:
       tags:
-        - book
-      summary: Deletes the sections that comes under the given sourceIds
-      description: Deletes the sections that comes under the given sourceIds
-      operationId: deleteBookSections
+        - section
+      summary: Deletes the sections under the given sourceIds
+      description: Deletes the sections under the given sourceIds
+      operationId: deleteSections
       parameters:
         - name: sourceSectionIds
           in: query
-          description: A list of source IDs from which the section should be fetched
+          description: A list of source IDs from which the sections should be deleted
           required: true
           schema:
             type: array
@@ -97,7 +99,7 @@ paths:
           explode: true
         - name: recursive
           in: query
-          description: A flag to mention if the sections should be fetched recursively
+          description: A flag to mention if the sections should be deleted recursively
           required: true
           schema:
             type: boolean
@@ -109,32 +111,57 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteBookSectionsResponse'
+                $ref: '#/components/schemas/DeleteSectionsResponse'
         '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorsAndWarnings'
-          description: Invalid input   
-  /levels:
+          description: Invalid input
+    put:
+      tags:
+        - section
+      summary: Update a section managed by an institution
+      description: Update an existing section
+      operationId: putSections
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSectionRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSectionResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+
+  /contents:
     post:
       tags:
-        - level
-      summary: Create a new class, year, standard or any other level like JEE etc...
-      description: Create a new class, year, standard or any other level like JEE etc...
-      operationId: createKnowledgeLevel
+        - content
+      summary: Create content within the system
+      description: Create a content entity
+      operationId: postContents
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostKnowledgeLevelRequest'
+              $ref: '#/components/schemas/CreateContentRequest'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostKnowledgeLevelResponse'
+                $ref: '#/components/schemas/CreateContentResponse'
         '400':
           content:
             application/json:
@@ -143,14 +170,14 @@ paths:
           description: Invalid input
     get:
       tags:
-        - level
-      summary: Returns all the levels under the given board
-      description: Returns all the levels under the given board
-      operationId: getLevels
+        - content
+      summary: Retrieve content by ID
+      description: Retrieve specific content details
+      operationId: getContents
       parameters:
-        - name: boardId
+        - name: contentIds
           in: query
-          description: A list of board IDs from which the levels should be fetched
+          description: A list of content IDs to retrieve
           required: true
           schema:
             type: array
@@ -164,96 +191,197 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetKnowledgeLevelsResponse'
+                $ref: '#/components/schemas/GetContentsResponse'
         '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorsAndWarnings'
           description: Invalid input
-    
-  /levels/{levelId}:
-    delete:
+    put:
       tags:
-        - level
-      summary: Delete level by ID
-      description: Delete level by ID
-      operationId: deleteLevel
-      parameters:
-        - name: levelId
-          in: path
-          description: ID of the level that needs to be deleted
-          required: true
-          schema:
-            type: string
-            
+        - content
+      summary: Update content details
+      description: Update an existing content entity
+      operationId: putContents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContentRequest'
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteKnowledgeLevelResponse'
+                $ref: '#/components/schemas/UpdateContentResponse'
         '400':
-          description: Invalid ID supplied
-  /levels/{sourceBoardId}/{levelId}:
-    delete:
-      tags:
-        - level
-      summary: Delete level by ID
-      description: Delete level by ID
-      operationId: deleteLevelByBoard
-      parameters:
-        - name: levelId
-          in: path
-          description: ID of the level that needs to be deleted
-          required: true
-          schema:
-            type: string
-            
-        - name: sourceBoardId
-          in: path
-          description: ID of the level that needs to be deleted
-          required: true
-          schema:
-            type: string
-            
-      responses:
-        '200':
-          description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+    delete:
+      tags:
+        - content
+      summary: Delete content entities
+      description: Delete specific content entries by IDs
+      operationId: deleteContents
+      parameters:
+        - name: contentIds
+          in: query
+          description: A list of content IDs to delete
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteContentsResponse'
         '400':
-          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+
+  /relations:
+    post:
+      tags:
+        - relations
+      summary: Create relationships between sections or content
+      description: Define relationships within or across sections and content entities
+      operationId: postRelations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRelationsRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRelationsResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+    get:
+      tags:
+        - relations
+      summary: Retrieve relationships
+      description: Retrieve relationships between sections and content entities
+      operationId: getRelations
+      parameters:
+        - name: source
+          in: query
+          description: Source entity ID
+          required: true
+          schema:
+            type: string
+        - name: target
+          in: query
+          description: Target entity ID
+          required: false
+          schema:
+            type: string
+        - name: relationship
+          in: query
+          description: Type of relationship
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRelationsResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+    delete:
+      tags:
+        - relations
+      summary: Delete relationships
+      description: Delete relationships between sections and content entities
+      operationId: deleteRelations
+      parameters:
+        - name: source
+          in: query
+          description: Source entity ID
+          required: true
+          schema:
+            type: string
+        - name: target
+          in: query
+          description: Target entity ID
+          required: false
+          schema:
+            type: string
+        - name: relationship
+          in: query
+          description: Type of relationship
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteRelationsResponse'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorsAndWarnings'
+          description: Invalid input
+
 components:
   schemas:
-    DeleteBookSectionsResponse:
+    DeleteSectionsResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/DeleteBookSectionsResponseData'
+          $ref: '#/components/schemas/DeleteSectionsResponseData'
       allOf:
         - $ref: '#/components/schemas/ErrorsAndWarnings'
-    DeleteBookSectionsResponseData:
+    DeleteSectionsResponseData:
       type: object
       properties:
         sourceSectionId:
          type: string
-         description: The section id can also be a book id
+         description: The section ID can also be a container ID
         sections:
           type: array
           items:
             $ref: '#/components/schemas/IdAndData'
-    GetBookSectionsResponse:
+    GetSectionsResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/GetBookSectionsResponseData'
+          $ref: '#/components/schemas/GetSectionsResponseData'
       allOf:
         - $ref: '#/components/schemas/ErrorsAndWarnings'
-    CreateBookSectionResponseData:
+    CreateSectionResponseData:
       type: object
       properties:
         mappings:
@@ -264,34 +392,34 @@ components:
           type: array
           items:
             type: string
-          description: The section id can also be a book id
+          description: The section ID can also be a container ID
         sections:
           type: array
           items:
             $ref: '#/components/schemas/IdAndData'
-    CreateBookSectionResponse:
+    CreateSectionResponse:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/CreateBookSectionResponseData'
+          $ref: '#/components/schemas/CreateSectionResponseData'
       allOf:
-        - $ref: '#/components/schemas/ErrorsAndWarnings'  
-    GetBookSectionsResponseData:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    GetSectionsResponseData:
       type: object
       properties:
         sourceSectionId:
          type: string
-         description: The section id can also be a book id
+         description: The section ID can also be a container ID
         sections:
           type: array
           items:
             $ref: '#/components/schemas/IdAndData'
-    CreateBookSectionRequest:
+    CreateSectionRequest:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/CreateBookSectionRequestData'
-    CreateBookSectionRequestData:
+          $ref: '#/components/schemas/CreateSectionRequestData'
+    CreateSectionRequestData:
       type: object
       properties:
         mappings:
@@ -302,70 +430,138 @@ components:
           type: array
           items:
             type: string
-          description: The section id can also be a book id
+          description: The section ID can also be a container ID
         sectionsToAdd:
           type: array
           items:
             $ref: '#/components/schemas/IdAndData'
-        
-    DeleteKnowledgeLevelResponse:
+    UpdateSectionRequest:
       type: object
       properties:
-        data:
-          $ref: '#/components/schemas/DeleteKnowledgeLevelResponseData'
-      allOf:
-        - $ref: '#/components/schemas/ErrorsAndWarnings' 
-    DeleteKnowledgeLevelResponseData:
-      properties:
-        impactedBoards:
-          type: array
-          items:
-            $ref: '#/components/schemas/IdAndData'
-        levelsDeleted:
-          type: array
-          items:
-            $ref: '#/components/schemas/IdAndData'
-    GetKnowledgeLevelsResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/GetKnowledgeLevelsResponseData'
-      allOf:
-        - $ref: '#/components/schemas/ErrorsAndWarnings'
-    GetKnowledgeLevelsResponseData:
-      type: object
-      properties:
-        sourceBoardId:
+        sectionId:
           type: string
-        levels:
-          type: array
-          items:
-            $ref: '#/components/schemas/IdAndData'
-    PostKnowledgeLevelRequestData:
+        updates:
+          type: object
+          additionalProperties: true
+    UpdateSectionResponse:
       type: object
       properties:
-        sourceBoardId:
-          type: string
-        levels:
-          type: array
-          items:
-            $ref: '#/components/schemas/IdAndData'
-    PostKnowledgeLevelResponse:
+        message:
+          $ref: '#/components/schemas/Message'
+    CreateContentRequest:
       type: object
       properties:
         data:
-          $ref: '#/components/schemas/PostKnowledgeLevelResponseData'
+          $ref: '#/components/schemas/IdAndData'
+    CreateContentResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/IdAndData'
       allOf:
         - $ref: '#/components/schemas/ErrorsAndWarnings'
-    PostKnowledgeLevelResponseData:
+    GetContentsResponse:
       type: object
       properties:
-        sourceBoardId:
-          type: string
-        levels:
+        data:
           type: array
           items:
             $ref: '#/components/schemas/IdAndData'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    UpdateContentRequest:
+      type: object
+      properties:
+        contentId:
+          type: string
+        updates:
+          type: object
+          additionalProperties: true
+    UpdateContentResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+    DeleteContentsResponse:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+      allOf:
+        - $ref: '#/components/schemas/ErrorsAndWarnings'
+    CreateRelationsRequest:
+      type: object
+      properties:
+        source:
+          type: string
+          description: The ID of the source entity (section or content).
+          example: "section123"
+        target:
+          type: string
+          description: The ID of the target entity (section or content).
+          example: "content456"
+        relationshipType:
+          type: string
+          description: The type of relationship to create.
+          example: "contains"
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Optional metadata for the relationship.
+      required:
+        - source
+        - target
+        - relationshipType
+
+    CreateRelationsResponse:
+      type: object
+      properties:
+        relationshipId:
+          type: string
+          description: The ID of the created relationship.
+          example: "relation789"
+        message:
+          $ref: '#/components/schemas/Message'
+
+    GetRelationsResponse:
+      type: object
+      properties:
+        relationships:
+          type: array
+          items:
+            type: object
+            properties:
+              source:
+                type: string
+                description: The ID of the source entity.
+              target:
+                type: string
+                description: The ID of the target entity.
+              relationshipType:
+                type: string
+                description: The type of relationship.
+              metadata:
+                type: object
+                additionalProperties:
+                  type: string
+                description: Optional metadata for the relationship.
+        message:
+          $ref: '#/components/schemas/Message'
+
+    DeleteRelationsResponse:
+      type: object
+      properties:
+        deletedRelationships:
+          type: array
+          items:
+            type: string
+            description: The IDs of the deleted relationships.
+          example: ["relation789"]
+        message:
+          $ref: '#/components/schemas/Message'
+
+
     IdAndData:
       type: object
       properties:
@@ -373,11 +569,6 @@ components:
           type: string
         data:
           type: string
-    PostKnowledgeLevelRequest:
-      properties:
-        data:
-          $ref: '#/components/schemas/PostKnowledgeLevelRequestData'
-              
     ErrorsAndWarnings:
       type: object
       properties:
@@ -388,7 +579,7 @@ components:
         warnings:
           type: array
           items:
-            $ref: '#/components/schemas/Message' 
+            $ref: '#/components/schemas/Message'
     Message:
       type: object
       properties:
@@ -398,3 +589,4 @@ components:
         message:
           type: string
           example: invalid id
+    
